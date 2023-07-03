@@ -1,6 +1,8 @@
 import 'package:flash_chat/constants.dart';
+import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_chat/components/round_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'LoginScreen';
@@ -9,6 +11,15 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  late String email;
+  late String password;
+  final _auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,6 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
               style: TextStyle(color: Colors.black),
               onChanged: (value) {
                 //Do something with the user input.
+                email = value;
               },
               decoration: kTextFieldDecoration.copyWith(
                 hintText: 'Enter your email',
@@ -49,6 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
               style: TextStyle(color: Colors.black),
               onChanged: (value) {
                 //Do something with the user input.
+                password = value;
               },
               decoration: kTextFieldDecoration.copyWith(
                 hintText: 'Enter your password'
@@ -60,7 +73,18 @@ class _LoginScreenState extends State<LoginScreen> {
             RoundedButton(
                 color: Colors.lightBlueAccent,
                 title: 'Log In',
-                onPressed: (){},
+                onPressed: () async{
+                  try {
+                    final user = await _auth.signInWithEmailAndPassword(
+                        email: email,
+                        password: password,);
+                    if(user != null){
+                      Navigator.pushNamed(context, ChatScreen.id);
+                    }
+                  } on Exception catch (e) {
+                    print(e);
+                  }
+                },
             ),
           ],
         ),

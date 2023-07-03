@@ -3,7 +3,6 @@ import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_chat/components/round_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'RegisterScreen';
@@ -73,11 +72,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               onPressed: () async{
                 try {
                   //we have to wait to make sure we have finished authenticating/creating our user
-                  final newUser = await _auth.createUserWithEmailAndPassword(
-                      email: email, password: password);
-                  if(newUser != null){
-                    Navigator.pushNamed(context, ChatScreen.id);
-                  }
+                  await _auth.createUserWithEmailAndPassword(email: email, password: password);
+                  Navigator.pushNamed(context, ChatScreen.id);
                 } catch (e) {
                   print(e);
                 }
